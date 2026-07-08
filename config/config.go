@@ -21,7 +21,10 @@ func Load[T any](path string) (*T, error) {
 		return nil, fmt.Errorf("parse config %q: %w", path, err)
 	}
 
-	if err := applyTags(reflect.ValueOf(&cfg).Elem(), ""); err != nil {
+	if err := ApplyDefaults(&cfg); err != nil {
+		return nil, err
+	}
+	if err := applyEnvAndRequired(reflect.ValueOf(&cfg).Elem(), ""); err != nil {
 		return nil, err
 	}
 
@@ -37,7 +40,26 @@ func MustLoad[T any](path string) *T {
 	return cfg
 }
 
-func applyTags(value reflect.Value, path string) error {
+// ApplyDefaults applies default tags to zero-valued fields in a struct pointer.
+func ApplyDefaults(target any) error {
+	if target == nil {
+		return fmt.Errorf("target is nil")
+	}
+
+	value := reflect.ValueOf(target)
+	if value.Kind() != reflect.Pointer || value.IsNil() {
+		return fmt.Errorf("target must be a non-nil pointer to struct")
+	}
+
+	value = value.Elem()
+	if value.Kind() != reflect.Struct {
+		return fmt.Errorf("target must be a pointer to struct")
+	}
+
+	return applyDefaults(value, "")
+}
+
+func applyDefaults(value reflect.Value, path string) error {
 	if value.Kind() == reflect.Pointer {
 		if value.IsNil() {
 			value.Set(reflect.New(value.Type().Elem()))
@@ -59,23 +81,69 @@ func applyTags(value reflect.Value, path string) error {
 
 		fieldPath := joinPath(path, fieldType.Name)
 		if field.Kind() == reflect.Struct {
-			if err := applyTags(field, fieldPath); err != nil {
+			if err := applyDefaults(field, fieldPath); err != nil {
 				return err
 			}
 			continue
 		}
 
-		if isZero(field) {
-			if defaultValue, ok := fieldType.Tag.Lookup("default"); ok {
+		if defaultValue, ok := fieldType.Tag.Lookup("default"); ok && defaultValue != "-" {
+			if field.Kind() == reflect.Pointer {
+				if field.IsNil() {
+					field.Set(reflect.New(field.Type().Elem()))
+					if err := setFromString(field.Elem(), defaultValue); err != nil {
+						return fmt.Errorf("apply default for %s: %w", fieldPath, err)
+					}
+				}
+			} else if isZero(field) {
 				if err := setFromString(field, defaultValue); err != nil {
 					return fmt.Errorf("apply default for %s: %w", fieldPath, err)
 				}
 			}
 		}
+	}
+
+	return nil
+}
+
+func applyEnvAndRequired(value reflect.Value, path string) error {
+	if value.Kind() == reflect.Pointer {
+		if value.IsNil() {
+			return nil
+		}
+		value = value.Elem()
+	}
+
+	if value.Kind() != reflect.Struct {
+		return nil
+	}
+
+	valueType := value.Type()
+	for i := 0; i < value.NumField(); i++ {
+		field := value.Field(i)
+		fieldType := valueType.Field(i)
+		if fieldType.PkgPath != "" {
+			continue
+		}
+
+		fieldPath := joinPath(path, fieldType.Name)
+		if field.Kind() == reflect.Struct {
+			if err := applyEnvAndRequired(field, fieldPath); err != nil {
+				return err
+			}
+			continue
+		}
 
 		if envName := fieldType.Tag.Get("env"); envName != "" {
 			if envValue, ok := os.LookupEnv(envName); ok {
-				if err := setFromString(field, envValue); err != nil {
+				target := field
+				if target.Kind() == reflect.Pointer {
+					if target.IsNil() {
+						target.Set(reflect.New(target.Type().Elem()))
+					}
+					target = target.Elem()
+				}
+				if err := setFromString(target, envValue); err != nil {
 					return fmt.Errorf("apply env %s for %s: %w", envName, fieldPath, err)
 				}
 			}
@@ -115,6 +183,12 @@ func setFromString(field reflect.Value, value string) error {
 			return err
 		}
 		field.SetBool(parsed)
+	case reflect.Float32, reflect.Float64:
+		parsed, err := strconv.ParseFloat(value, field.Type().Bits())
+		if err != nil {
+			return err
+		}
+		field.SetFloat(parsed)
 	default:
 		return fmt.Errorf("unsupported field type %s", field.Type())
 	}

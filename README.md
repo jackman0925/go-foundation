@@ -17,9 +17,10 @@ go get github.com/jackman0925/go-foundation@v0.1.0
 | `response` | 标准 API 响应结构和分页响应结构 |
 | `pagination` | 分页参数解析、limit/offset 计算 |
 | `timex` | 日期时间格式化、解析、日/月边界 |
-| `stringx` | 字符串判空、截断、脱敏、随机字符串 |
+| `stringx` | 字符串判空、截断、脱敏、随机字符串、命名转换 |
 | `jsonx` | JSON 字符串编解码、Pretty JSON |
-| `crypto` | MD5、SHA256、HMAC-SHA256、随机数字 |
+| `crypto` | MD5、SHA256、HMAC-SHA256、随机数字、密码哈希、map checksum |
+| `idgen` | 可配置 Snowflake ID 生成器 |
 
 ## 快速开始
 
@@ -37,6 +38,19 @@ _ = resp
 _ = limit
 _ = offset
 ```
+
+## 不适合放入本库的内容
+
+- 具体业务代码；
+- 公司内部接口地址、密钥、Token、证书、账号；
+- 真实业务表结构、客户名称、内部权限模型；
+- 支付、License、微信、管理后台等业务封装。
+
+## 第一版不包含
+
+`v0.1.0` 不做日志封装、数据库连接和事务、Redis 基础封装、Gin 通用中间件。
+
+本库参考业务项目 utils 时，只归纳通用且可测试的能力。JWT、Gin binding、SQL 条件构造等能力暂不进入公共库。
 
 ## 开发规范
 

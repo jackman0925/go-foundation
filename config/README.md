@@ -20,10 +20,18 @@ type AppConfig struct {
 }
 
 cfg := config.MustLoad[AppConfig]("configs/config.yaml")
+
+type Request struct {
+    Name *string `default:"guest"`
+}
+
+req := &Request{}
+err := config.ApplyDefaults(req)
 ```
 
 ## 注意事项
 
-- 当前支持基础标量类型：string、int、uint、bool；
+- 当前支持基础标量类型：string、int、uint、float、bool；
+- `ApplyDefaults` 支持基础类型指针和嵌套结构体；
 - `env` 会覆盖 YAML 和 default；
 - `required:"true"` 在默认值和环境变量处理后校验。
