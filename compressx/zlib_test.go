@@ -24,3 +24,17 @@ func TestUnzlibRejectsInvalidData(t *testing.T) {
 		t.Fatal("expected invalid zlib error")
 	}
 }
+
+func TestZlibEmptyInputRoundTrip(t *testing.T) {
+	compressed, err := Zlib(nil)
+	if err != nil {
+		t.Fatalf("Zlib returned error: %v", err)
+	}
+	output, err := Unzlib(compressed)
+	if err != nil {
+		t.Fatalf("Unzlib returned error: %v", err)
+	}
+	if len(output) != 0 {
+		t.Fatalf("expected empty output, got %q", output)
+	}
+}

@@ -37,3 +37,9 @@ func TestRandomDigitsLength(t *testing.T) {
 		}
 	}
 }
+
+func TestRandomDigitsRejectsNegativeLength(t *testing.T) {
+	if _, err := RandomDigits(-1); err == nil {
+		t.Fatal("expected negative length error")
+	}
+}

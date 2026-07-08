@@ -80,6 +80,15 @@ func applyDefaults(value reflect.Value, path string) error {
 		}
 
 		fieldPath := joinPath(path, fieldType.Name)
+		if field.Kind() == reflect.Pointer && field.Type().Elem().Kind() == reflect.Struct {
+			if field.IsNil() {
+				field.Set(reflect.New(field.Type().Elem()))
+			}
+			if err := applyDefaults(field.Elem(), fieldPath); err != nil {
+				return err
+			}
+			continue
+		}
 		if field.Kind() == reflect.Struct {
 			if err := applyDefaults(field, fieldPath); err != nil {
 				return err
@@ -127,6 +136,15 @@ func applyEnvAndRequired(value reflect.Value, path string) error {
 		}
 
 		fieldPath := joinPath(path, fieldType.Name)
+		if field.Kind() == reflect.Pointer && field.Type().Elem().Kind() == reflect.Struct {
+			if field.IsNil() {
+				field.Set(reflect.New(field.Type().Elem()))
+			}
+			if err := applyEnvAndRequired(field.Elem(), fieldPath); err != nil {
+				return err
+			}
+			continue
+		}
 		if field.Kind() == reflect.Struct {
 			if err := applyEnvAndRequired(field, fieldPath); err != nil {
 				return err
@@ -149,7 +167,7 @@ func applyEnvAndRequired(value reflect.Value, path string) error {
 			}
 		}
 
-		if fieldType.Tag.Get("required") == "true" && isZero(field) {
+		if fieldType.Tag.Get("required") == "true" && isEmptyConfigValue(field) {
 			return fmt.Errorf("required config field %s is empty", fieldPath)
 		}
 	}
@@ -197,6 +215,16 @@ func setFromString(field reflect.Value, value string) error {
 }
 
 func isZero(value reflect.Value) bool {
+	return value.IsZero()
+}
+
+func isEmptyConfigValue(value reflect.Value) bool {
+	if value.Kind() == reflect.Pointer {
+		if value.IsNil() {
+			return true
+		}
+		return isEmptyConfigValue(value.Elem())
+	}
 	return value.IsZero()
 }
 

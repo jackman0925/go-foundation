@@ -23,3 +23,9 @@ func TestHexToRGBARejectsInvalidLength(t *testing.T) {
 		t.Fatal("expected invalid length error")
 	}
 }
+
+func TestHexToRGBARejectsInvalidHex(t *testing.T) {
+	if _, err := HexToRGBA("#zzzzzz"); err == nil {
+		t.Fatal("expected invalid hex error")
+	}
+}

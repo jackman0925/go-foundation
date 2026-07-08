@@ -3,6 +3,9 @@ package stringx
 import "testing"
 
 func TestIsNumeric(t *testing.T) {
+	if IsNumeric("") {
+		t.Fatal("expected empty string to be non-numeric")
+	}
 	if !IsNumeric("12345") {
 		t.Fatal("expected numeric string")
 	}

@@ -22,3 +22,18 @@ func TestClientIPFromHTTPRequestHandlesRawIP(t *testing.T) {
 		t.Fatalf("unexpected client IP: %q", got)
 	}
 }
+
+func TestClientIPFromHTTPRequestHandlesNilRequest(t *testing.T) {
+	if got := ClientIPFromHTTPRequest(nil); got != "" {
+		t.Fatalf("expected empty IP, got %q", got)
+	}
+}
+
+func TestClientIPFromHTTPRequestHandlesIPv6(t *testing.T) {
+	req := &http.Request{RemoteAddr: "[2001:db8::1]:12345"}
+
+	got := ClientIPFromHTTPRequest(req)
+	if got != "2001:db8::1" {
+		t.Fatalf("unexpected client IP: %q", got)
+	}
+}

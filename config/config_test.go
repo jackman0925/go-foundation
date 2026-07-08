@@ -50,3 +50,43 @@ func TestLoadRejectsMissingRequiredField(t *testing.T) {
 		t.Fatal("expected missing required field error")
 	}
 }
+
+func TestLoadReturnsReadAndParseErrors(t *testing.T) {
+	if _, err := Load[testConfig](filepath.Join(t.TempDir(), "missing.yaml")); err == nil {
+		t.Fatal("expected missing file error")
+	}
+
+	path := writeTempConfig(t, "app:\n  mode: [bad\n")
+	if _, err := Load[testConfig](path); err == nil {
+		t.Fatal("expected parse error")
+	}
+}
+
+func TestMustLoadPanicsOnError(t *testing.T) {
+	defer func() {
+		if recover() == nil {
+			t.Fatal("expected panic")
+		}
+	}()
+
+	_ = MustLoad[testConfig](filepath.Join(t.TempDir(), "missing.yaml"))
+}
+
+func TestMustLoadReturnsConfigOnSuccess(t *testing.T) {
+	path := writeTempConfig(t, "app:\n  mode: test\n")
+
+	cfg := MustLoad[testConfig](path)
+	if cfg.App.Mode != "test" {
+		t.Fatalf("expected mode test, got %q", cfg.App.Mode)
+	}
+}
+
+func writeTempConfig(t *testing.T, content string) string {
+	t.Helper()
+
+	path := filepath.Join(t.TempDir(), "config.yaml")
+	if err := os.WriteFile(path, []byte(content), 0o600); err != nil {
+		t.Fatalf("write config: %v", err)
+	}
+	return path
+}

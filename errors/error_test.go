@@ -37,3 +37,20 @@ func TestWrapPreservesCause(t *testing.T) {
 		t.Fatalf("expected wrapped message, got %q", MessageOf(err))
 	}
 }
+
+func TestCodeOfAndMessageOfHandleNilAndUnknownErrors(t *testing.T) {
+	if CodeOf(nil) != CodeOK {
+		t.Fatalf("expected CodeOK for nil, got %d", CodeOf(nil))
+	}
+	if MessageOf(nil) != "ok" {
+		t.Fatalf("expected ok message for nil, got %q", MessageOf(nil))
+	}
+
+	err := stderrors.New("plain error")
+	if CodeOf(err) != CodeInternal {
+		t.Fatalf("expected internal code, got %d", CodeOf(err))
+	}
+	if MessageOf(err) != "plain error" {
+		t.Fatalf("expected plain error message, got %q", MessageOf(err))
+	}
+}

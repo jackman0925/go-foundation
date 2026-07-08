@@ -24,3 +24,17 @@ func TestGunzipRejectsInvalidData(t *testing.T) {
 		t.Fatal("expected invalid gzip error")
 	}
 }
+
+func TestGzipEmptyInputRoundTrip(t *testing.T) {
+	compressed, err := Gzip(nil)
+	if err != nil {
+		t.Fatalf("Gzip returned error: %v", err)
+	}
+	output, err := Gunzip(compressed)
+	if err != nil {
+		t.Fatalf("Gunzip returned error: %v", err)
+	}
+	if len(output) != 0 {
+		t.Fatalf("expected empty output, got %q", output)
+	}
+}

@@ -38,3 +38,15 @@ func TestMustToStringPanicsOnUnsupportedValue(t *testing.T) {
 
 	_ = MustToString(make(chan int))
 }
+
+func TestMustToStringReturnsJSONForSupportedValue(t *testing.T) {
+	if got := MustToString(map[string]int{"count": 2}); got != `{"count":2}` {
+		t.Fatalf("unexpected JSON: %s", got)
+	}
+}
+
+func TestPrettyReturnsErrorForUnsupportedValue(t *testing.T) {
+	if _, err := Pretty(make(chan int)); err == nil {
+		t.Fatal("expected pretty error")
+	}
+}

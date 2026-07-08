@@ -41,3 +41,28 @@ func TestParseCommonLayouts(t *testing.T) {
 		t.Fatalf("unexpected parsed time: %s", got)
 	}
 }
+
+func TestParseRFC3339AndRejectsInvalidValue(t *testing.T) {
+	got, err := Parse("2026-07-08T09:10:11Z")
+	if err != nil {
+		t.Fatalf("Parse RFC3339 returned error: %v", err)
+	}
+	if got.Location() != time.UTC {
+		t.Fatalf("expected UTC location, got %s", got.Location())
+	}
+
+	if _, err := Parse("not-a-time"); err == nil {
+		t.Fatal("expected invalid time error")
+	}
+}
+
+func TestFormatDateAndDateTime(t *testing.T) {
+	input := time.Date(2026, 7, 8, 9, 10, 11, 0, time.UTC)
+
+	if got := FormatDate(input); got != "2026-07-08" {
+		t.Fatalf("unexpected date: %q", got)
+	}
+	if got := FormatDateTime(input); got != "2026-07-08 09:10:11" {
+		t.Fatalf("unexpected date time: %q", got)
+	}
+}

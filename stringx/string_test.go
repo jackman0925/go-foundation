@@ -16,12 +16,23 @@ func TestTruncateHandlesRuneBoundaries(t *testing.T) {
 	if got != "你好" {
 		t.Fatalf("expected rune-safe truncate, got %q", got)
 	}
+
+	if got := Truncate("hello", 10); got != "hello" {
+		t.Fatalf("expected unchanged text, got %q", got)
+	}
+	if got := Truncate("hello", 0); got != "" {
+		t.Fatalf("expected empty text, got %q", got)
+	}
 }
 
 func TestMaskMobile(t *testing.T) {
 	got := MaskMobile("13800138000")
 	if got != "138****8000" {
 		t.Fatalf("unexpected masked mobile: %q", got)
+	}
+
+	if got := MaskMobile("123"); got != "123" {
+		t.Fatalf("expected invalid mobile to be unchanged, got %q", got)
 	}
 }
 
@@ -32,5 +43,11 @@ func TestRandomStringLength(t *testing.T) {
 	}
 	if len(got) != 16 {
 		t.Fatalf("expected length 16, got %d", len(got))
+	}
+}
+
+func TestRandomStringRejectsNegativeLength(t *testing.T) {
+	if _, err := RandomString(-1); err == nil {
+		t.Fatal("expected negative length error")
 	}
 }

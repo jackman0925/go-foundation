@@ -1,6 +1,7 @@
 package netx
 
 import (
+	"fmt"
 	"net/url"
 	"strings"
 )
@@ -10,6 +11,9 @@ func Domain(value string) (string, error) {
 	parsed, err := url.Parse(value)
 	if err != nil {
 		return "", err
+	}
+	if parsed.Scheme == "" || parsed.Hostname() == "" {
+		return "", fmt.Errorf("url must include scheme and host")
 	}
 
 	result := parsed.Scheme + "://" + parsed.Hostname()

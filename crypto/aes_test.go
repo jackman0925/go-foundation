@@ -60,4 +60,7 @@ func TestAESGCMRejectsInvalidInput(t *testing.T) {
 	if _, err := DecryptAESGCM("not-base64", []byte("1234567890abcdef")); err == nil {
 		t.Fatal("expected invalid ciphertext error")
 	}
+	if _, err := DecryptAESGCM("c2hvcnQ=", []byte("1234567890abcdef")); err == nil {
+		t.Fatal("expected short ciphertext error")
+	}
 }
