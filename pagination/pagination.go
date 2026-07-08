@@ -33,6 +33,14 @@ func (p Page) LimitOffset() (int, int) {
 	return p.PageSize, (p.PageNo - 1) * p.PageSize
 }
 
+// TotalPages returns the number of pages needed for totalRecords.
+func TotalPages(totalRecords int64, pageSize int64) int64 {
+	if totalRecords <= 0 || pageSize <= 0 {
+		return 0
+	}
+	return (totalRecords + pageSize - 1) / pageSize
+}
+
 func parsePositiveInt(value string, fallback int) int {
 	parsed, err := strconv.Atoi(value)
 	if err != nil || parsed <= 0 {

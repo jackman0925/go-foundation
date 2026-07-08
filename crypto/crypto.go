@@ -18,6 +18,11 @@ func MD5Hex(value string) string {
 	return hex.EncodeToString(sum[:])
 }
 
+// MD5Hex16 returns the middle 16 characters of the lowercase MD5 digest.
+func MD5Hex16(value string) string {
+	return MD5Hex(value)[8:24]
+}
+
 // SHA256Hex returns the lowercase hex-encoded SHA256 digest of value.
 func SHA256Hex(value string) string {
 	sum := sha256.Sum256([]byte(value))

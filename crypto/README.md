@@ -12,6 +12,7 @@ import foundationCrypto "github.com/jackman0925/go-foundation/crypto"
 
 ```go
 md5Text := foundationCrypto.MD5Hex("hello")
+md5Short := foundationCrypto.MD5Hex16("hello")
 shaText := foundationCrypto.SHA256Hex("hello")
 sign := foundationCrypto.HMACSHA256Hex("secret", "hello")
 code, err := foundationCrypto.RandomDigits(6)
