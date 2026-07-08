@@ -1,6 +1,6 @@
 # crypto
 
-`crypto` 提供常用哈希、签名、AES-GCM、随机数字、密码哈希和 checksum 工具。
+`crypto` 提供常用哈希、签名、AES-GCM、CRC16、随机数字、密码哈希和 checksum 工具。
 
 ## 导入
 
@@ -14,6 +14,7 @@ import foundationCrypto "github.com/jackman0925/go-foundation/crypto"
 md5Text := foundationCrypto.MD5Hex("hello")
 md5Short := foundationCrypto.MD5Hex16("hello")
 shaText := foundationCrypto.SHA256Hex("hello")
+crc := foundationCrypto.CRC16Modbus([]byte("123456789"))
 sign := foundationCrypto.HMACSHA256Hex("secret", "hello")
 encrypted, err := foundationCrypto.EncryptAESGCM("hello", []byte("1234567890abcdef1234567890abcdef"))
 plain, err := foundationCrypto.DecryptAESGCM(encrypted, []byte("1234567890abcdef1234567890abcdef"))

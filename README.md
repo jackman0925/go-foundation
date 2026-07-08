@@ -22,6 +22,10 @@ go get github.com/jackman0925/go-foundation@v0.1.0
 | `crypto` | MD5、SHA256、HMAC-SHA256、随机数字、密码哈希、map checksum |
 | `idgen` | 可配置 Snowflake ID 生成器 |
 | `netx` | URL 域名提取、URL path 拼接、HTTP 客户端 IP 提取 |
+| `compressx` | gzip、zlib 压缩和解压 |
+| `slicex` | 泛型 slice 包含、去重、反转 |
+| `colorx` | 十六进制颜色和 RGBA 转换 |
+| `geox` | 经纬度距离计算 |
 
 ## 快速开始
 
@@ -51,7 +55,8 @@ _ = offset
 
 `v0.1.0` 不做日志封装、数据库连接和事务、Redis 基础封装、Gin 通用中间件。
 
-本库参考业务项目 utils 时，只归纳通用且可测试的能力。JWT、Gin binding、SQL 条件构造、Proto 默认值、反射 CopyList 等能力暂不进入公共库。
+本库参考业务项目 utils 时，只归纳通用且可测试的能力。
+
 
 ## 开发规范
 
