@@ -31,7 +31,7 @@ func Load[T any](path string) (*T, error) {
 	return &cfg, nil
 }
 
-// MustLoad 读取 YAML 文件到 T，加载失败时 panic。
+// MustLoad 读取 YAML 文件到 T，加载失败时 panic；仅限测试或初始化阶段使用。
 func MustLoad[T any](path string) *T {
 	cfg, err := Load[T](path)
 	if err != nil {

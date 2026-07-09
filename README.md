@@ -30,7 +30,7 @@ go get github.com/jackman0925/go-foundation@v0.1.0
 ## 快速开始
 
 ```go
-cfg := config.MustLoad[AppConfig]("configs/config.yaml")
+cfg, err := config.Load[AppConfig]("configs/config.yaml")
 
 err := foundationErrors.New(foundationErrors.CodeBadRequest, "参数错误")
 resp := response.NewFail(err)
@@ -39,6 +39,7 @@ page := pagination.Parse("1", "20")
 limit, offset := page.LimitOffset()
 
 _ = cfg
+_ = err
 _ = resp
 _ = limit
 _ = offset

@@ -11,7 +11,7 @@ func MarshalToString(value any) (string, error) {
 	return string(content), nil
 }
 
-// MustToString 将输入值序列化为 JSON，失败时 panic。
+// MustToString 将输入值序列化为 JSON，失败时 panic；仅限测试或初始化阶段使用。
 func MustToString(value any) string {
 	text, err := MarshalToString(value)
 	if err != nil {

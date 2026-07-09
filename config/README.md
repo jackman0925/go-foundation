@@ -19,7 +19,7 @@ type AppConfig struct {
     } `yaml:"app"`
 }
 
-cfg := config.MustLoad[AppConfig]("configs/config.yaml")
+cfg, err := config.Load[AppConfig]("configs/config.yaml")
 
 type Request struct {
     Name *string `default:"guest"`
@@ -35,3 +35,4 @@ err := config.ApplyDefaults(req)
 - `ApplyDefaults` 支持基础类型指针和嵌套结构体；
 - `env` 会覆盖 YAML 和 default；
 - `required:"true"` 在默认值和环境变量处理后校验。
+- `MustLoad` 失败时会 panic，仅适合测试或初始化阶段；业务路径建议使用 `Load`。

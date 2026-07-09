@@ -18,5 +18,5 @@ pretty, err := jsonx.Pretty(data)
 
 ## 注意事项
 
-- `MustToString` 只适合初始化或测试场景；
+- `MustToString` 失败时会 panic，仅适合测试或初始化阶段；
 - 业务路径建议使用返回 error 的方法。
