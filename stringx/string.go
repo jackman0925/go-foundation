@@ -9,12 +9,12 @@ import (
 
 const randomAlphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
-// IsBlank reports whether value is empty after trimming whitespace.
+// IsBlank 判断字符串去除空白后是否为空。
 func IsBlank(value string) bool {
 	return strings.TrimSpace(value) == ""
 }
 
-// Truncate returns at most maxRunes runes without splitting multi-byte characters.
+// Truncate 按 rune 截断字符串，避免切断多字节字符。
 func Truncate(value string, maxRunes int) string {
 	if maxRunes <= 0 {
 		return ""
@@ -27,7 +27,7 @@ func Truncate(value string, maxRunes int) string {
 	return string(runes[:maxRunes])
 }
 
-// MaskMobile masks the middle four digits of an 11-digit mobile number.
+// MaskMobile 对 11 位手机号中间四位做脱敏处理。
 func MaskMobile(value string) string {
 	runes := []rune(value)
 	if len(runes) != 11 {
@@ -36,7 +36,7 @@ func MaskMobile(value string) string {
 	return string(runes[:3]) + "****" + string(runes[7:])
 }
 
-// RandomString returns a cryptographically random alphanumeric string.
+// RandomString 生成加密安全的随机字母数字字符串。
 func RandomString(length int) (string, error) {
 	if length < 0 {
 		return "", fmt.Errorf("length must be non-negative")

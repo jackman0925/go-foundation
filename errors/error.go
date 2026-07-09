@@ -3,48 +3,48 @@ package errors
 import stderrors "errors"
 
 const (
-	// CodeOK represents a successful operation.
+	// CodeOK 表示操作成功。
 	CodeOK = 0
-	// CodeBadRequest represents invalid input.
+	// CodeBadRequest 表示请求参数无效。
 	CodeBadRequest = 40000
-	// CodeUnauthorized represents missing or invalid authentication.
+	// CodeUnauthorized 表示缺少认证或认证无效。
 	CodeUnauthorized = 40100
-	// CodeForbidden represents a forbidden operation.
+	// CodeForbidden 表示操作被禁止。
 	CodeForbidden = 40300
-	// CodeNotFound represents a missing resource.
+	// CodeNotFound 表示资源不存在。
 	CodeNotFound = 40400
-	// CodeInternal represents an internal server error.
+	// CodeInternal 表示内部服务错误。
 	CodeInternal = 50000
 )
 
-// AppError carries a stable code and public message while optionally wrapping a cause.
+// AppError 携带稳定错误码和公开错误信息，并可包装原始错误。
 type AppError struct {
 	Code    int
 	Message string
 	cause   error
 }
 
-// Error returns the public error message.
+// Error 返回公开错误信息。
 func (e *AppError) Error() string {
 	return e.Message
 }
 
-// Unwrap returns the original cause for errors.Is and errors.As.
+// Unwrap 返回原始错误，用于 errors.Is 和 errors.As。
 func (e *AppError) Unwrap() error {
 	return e.cause
 }
 
-// New creates an AppError without an underlying cause.
+// New 创建不包含原始错误的 AppError。
 func New(code int, message string) error {
 	return &AppError{Code: code, Message: message}
 }
 
-// Wrap creates an AppError and preserves the underlying cause.
+// Wrap 创建 AppError 并保留原始错误。
 func Wrap(code int, message string, cause error) error {
 	return &AppError{Code: code, Message: message, cause: cause}
 }
 
-// CodeOf returns an AppError code or CodeInternal for unknown errors.
+// CodeOf 返回 AppError 错误码；未知错误返回 CodeInternal。
 func CodeOf(err error) int {
 	if err == nil {
 		return CodeOK
@@ -57,7 +57,7 @@ func CodeOf(err error) int {
 	return CodeInternal
 }
 
-// MessageOf returns an AppError message or the error string for unknown errors.
+// MessageOf 返回 AppError 错误信息；未知错误返回 error 字符串。
 func MessageOf(err error) string {
 	if err == nil {
 		return "ok"

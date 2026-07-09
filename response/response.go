@@ -2,14 +2,14 @@ package response
 
 import foundationErrors "github.com/jackman0925/go-foundation/errors"
 
-// Response is the standard API response shape.
+// Response 是标准 API 响应结构。
 type Response struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
 	Data    any    `json:"data,omitempty"`
 }
 
-// PageData is the standard paginated response payload.
+// PageData 是标准分页响应数据结构。
 type PageData struct {
 	List     any   `json:"list"`
 	Total    int64 `json:"total"`
@@ -17,7 +17,7 @@ type PageData struct {
 	PageSize int   `json:"pageSize"`
 }
 
-// NewOK creates a successful response.
+// NewOK 创建成功响应。
 func NewOK(data any) Response {
 	return Response{
 		Code:    foundationErrors.CodeOK,
@@ -26,7 +26,7 @@ func NewOK(data any) Response {
 	}
 }
 
-// NewFail creates a failed response from an error.
+// NewFail 根据 error 创建失败响应。
 func NewFail(err error) Response {
 	return Response{
 		Code:    foundationErrors.CodeOf(err),
@@ -34,7 +34,7 @@ func NewFail(err error) Response {
 	}
 }
 
-// NewPage creates a successful paginated response.
+// NewPage 创建成功分页响应。
 func NewPage(list any, total int64, page int, pageSize int) Response {
 	return NewOK(PageData{
 		List:     list,

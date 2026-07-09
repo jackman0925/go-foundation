@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// MapChecksumMD5 returns a stable MD5 checksum for a string-keyed map.
+// MapChecksumMD5 为字符串键 map 生成稳定的 MD5 校验值。
 func MapChecksumMD5(data map[string]any) string {
 	keys := make([]string, 0, len(data))
 	for key := range data {

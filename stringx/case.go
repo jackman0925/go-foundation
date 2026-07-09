@@ -5,7 +5,7 @@ import (
 	"unicode"
 )
 
-// CamelToSnake converts camelCase or PascalCase into snake_case.
+// CamelToSnake 将 camelCase 或 PascalCase 转换为 snake_case。
 func CamelToSnake(value string) string {
 	if value == "" {
 		return ""

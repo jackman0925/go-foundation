@@ -9,7 +9,7 @@ import (
 	"io"
 )
 
-// EncryptAESGCM encrypts plaintext with AES-GCM and returns base64(nonce|ciphertext).
+// EncryptAESGCM 使用 AES-GCM 加密明文，并返回 base64(nonce|ciphertext)。
 func EncryptAESGCM(plaintext string, key []byte) (string, error) {
 	gcm, err := newAESGCM(key)
 	if err != nil {
@@ -29,7 +29,7 @@ func EncryptAESGCM(plaintext string, key []byte) (string, error) {
 	return base64.StdEncoding.EncodeToString(payload), nil
 }
 
-// DecryptAESGCM decrypts base64(nonce|ciphertext) produced by EncryptAESGCM.
+// DecryptAESGCM 解密由 EncryptAESGCM 生成的 base64(nonce|ciphertext)。
 func DecryptAESGCM(ciphertext string, key []byte) (string, error) {
 	gcm, err := newAESGCM(key)
 	if err != nil {

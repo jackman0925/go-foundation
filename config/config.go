@@ -9,7 +9,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// Load reads a YAML file into T, then applies default, env, and required tags.
+// Load 读取 YAML 文件到 T，并应用 default、env 和 required 标签。
 func Load[T any](path string) (*T, error) {
 	content, err := os.ReadFile(path)
 	if err != nil {
@@ -31,7 +31,7 @@ func Load[T any](path string) (*T, error) {
 	return &cfg, nil
 }
 
-// MustLoad reads a YAML file into T and panics if loading fails.
+// MustLoad 读取 YAML 文件到 T，加载失败时 panic。
 func MustLoad[T any](path string) *T {
 	cfg, err := Load[T](path)
 	if err != nil {
@@ -40,7 +40,7 @@ func MustLoad[T any](path string) *T {
 	return cfg
 }
 
-// ApplyDefaults applies default tags to zero-valued fields in a struct pointer.
+// ApplyDefaults 将 default 标签应用到结构体指针中的零值字段。
 func ApplyDefaults(target any) error {
 	if target == nil {
 		return fmt.Errorf("target is nil")

@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Domain returns scheme://host[:port] from a URL string.
+// Domain 从 URL 字符串中返回 scheme://host[:port]。
 func Domain(value string) (string, error) {
 	parsed, err := url.Parse(value)
 	if err != nil {
@@ -23,7 +23,7 @@ func Domain(value string) (string, error) {
 	return result, nil
 }
 
-// URLPathJoin joins URL path parts while preserving the first scheme and host.
+// URLPathJoin 拼接 URL path 片段，并保留第一个 scheme 和 host。
 func URLPathJoin(parts ...string) (string, error) {
 	if len(parts) == 0 {
 		return "", nil

@@ -13,13 +13,13 @@ const (
 
 var defaultEpoch = time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)
 
-// SnowflakeOptions configures a Snowflake generator.
+// SnowflakeOptions 配置 Snowflake 生成器。
 type SnowflakeOptions struct {
 	MachineID int64
 	Epoch     time.Time
 }
 
-// Snowflake generates sortable unique int64 IDs.
+// Snowflake 生成可排序的唯一 int64 ID。
 type Snowflake struct {
 	mu            sync.Mutex
 	epochMillis   int64
@@ -29,7 +29,7 @@ type Snowflake struct {
 	now           func() int64
 }
 
-// NewSnowflake creates a Snowflake generator with explicit machine configuration.
+// NewSnowflake 使用显式机器配置创建 Snowflake 生成器。
 func NewSnowflake(options SnowflakeOptions) (*Snowflake, error) {
 	if options.MachineID < 0 || options.MachineID > maxMachineID {
 		return nil, fmt.Errorf("machine id must be between 0 and %d", maxMachineID)
@@ -48,7 +48,7 @@ func NewSnowflake(options SnowflakeOptions) (*Snowflake, error) {
 	}, nil
 }
 
-// NextID returns the next unique ID.
+// NextID 返回下一个唯一 ID。
 func (s *Snowflake) NextID() (int64, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()

@@ -21,7 +21,7 @@ go get github.com/jackman0925/go-foundation@v0.1.0
 | `jsonx` | JSON 字符串编解码、Pretty JSON |
 | `crypto` | MD5、SHA256、HMAC-SHA256、随机数字、密码哈希、map checksum |
 | `idgen` | 可配置 Snowflake ID 生成器 |
-| `netx` | URL 域名提取、URL path 拼接、HTTP 客户端 IP 提取 |
+| `netx` | URL 域名提取、URL path 拼接、HTTP 客户端 IP 提取、本机 IPv4 网卡筛选 |
 | `compressx` | gzip、zlib 压缩和解压 |
 | `slicex` | 泛型 slice 包含、去重、反转 |
 | `colorx` | 十六进制颜色和 RGBA 转换 |

@@ -7,7 +7,7 @@ import (
 
 var versionSeparator = regexp.MustCompile(`[._]`)
 
-// CompareVersion compares dotted or underscored numeric versions.
+// CompareVersion 比较使用点号或下划线分隔的数字版本号。
 func CompareVersion(left string, right string) int {
 	if left == right {
 		return 0

@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-// NetworkInterface describes a local IPv4 network interface.
+// NetworkInterface 描述本机 IPv4 网络接口。
 type NetworkInterface struct {
 	Name    string `json:"name"`
 	IP      string `json:"ip"`
@@ -13,7 +13,7 @@ type NetworkInterface struct {
 	Subnet  string `json:"subnet"`
 }
 
-// LocalInterfaceOptions controls local interface filtering.
+// LocalInterfaceOptions 控制本机网络接口过滤规则。
 type LocalInterfaceOptions struct {
 	IncludeLoopback bool
 	IncludeInactive bool
@@ -28,7 +28,7 @@ type localInterfaceCandidate struct {
 	mask  net.IPMask
 }
 
-// LocalIPv4Interfaces returns filtered local IPv4 interfaces.
+// LocalIPv4Interfaces 返回过滤后的本机 IPv4 网络接口。
 func LocalIPv4Interfaces(options LocalInterfaceOptions) ([]NetworkInterface, error) {
 	ifaces, err := net.Interfaces()
 	if err != nil {
@@ -58,7 +58,7 @@ func LocalIPv4Interfaces(options LocalInterfaceOptions) ([]NetworkInterface, err
 	return filterLocalInterfaceCandidates(candidates, options), nil
 }
 
-// LocalIPsFromInterfaces returns display IPs with localhost fallback.
+// LocalIPsFromInterfaces 从接口列表中返回展示用 IP，并在为空时回退到 localhost。
 func LocalIPsFromInterfaces(interfaces []NetworkInterface, bindAddr string, showAll bool) []string {
 	ips := make([]string, 0, len(interfaces))
 	for _, iface := range interfaces {
@@ -73,7 +73,7 @@ func LocalIPsFromInterfaces(interfaces []NetworkInterface, bindAddr string, show
 	return ips
 }
 
-// InterfacesBySubnet groups interfaces by subnet after optional bind filtering.
+// InterfacesBySubnet 按子网分组接口，并可按 bindAddr 做展示过滤。
 func InterfacesBySubnet(interfaces []NetworkInterface, bindAddr string, showAll bool) map[string][]NetworkInterface {
 	subnets := make(map[string][]NetworkInterface)
 	for _, iface := range interfaces {
@@ -85,7 +85,7 @@ func InterfacesBySubnet(interfaces []NetworkInterface, bindAddr string, showAll 
 	return subnets
 }
 
-// IsVirtualInterfaceName reports whether name has a common virtual interface prefix.
+// IsVirtualInterfaceName 判断接口名是否包含常见虚拟接口前缀。
 func IsVirtualInterfaceName(name string) bool {
 	name = strings.ToLower(name)
 	virtualPrefixes := []string{

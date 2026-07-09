@@ -1,6 +1,6 @@
 package crypto
 
-// CRC16Modbus returns the CRC-16/MODBUS checksum.
+// CRC16Modbus 返回 CRC-16/MODBUS 校验值。
 func CRC16Modbus(data []byte) uint16 {
 	var crc uint16 = 0xFFFF
 	for _, item := range data {

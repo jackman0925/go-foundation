@@ -7,7 +7,7 @@ import (
 
 var emailPattern = regexp.MustCompile(`^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$`)
 
-// IsNumeric reports whether value is a base-10 integer string.
+// IsNumeric 判断字符串是否为十进制整数。
 func IsNumeric(value string) bool {
 	if value == "" {
 		return false
@@ -16,7 +16,7 @@ func IsNumeric(value string) bool {
 	return err == nil
 }
 
-// IsEmail reports whether value looks like a valid email address.
+// IsEmail 判断字符串是否符合常见邮箱格式。
 func IsEmail(value string) bool {
 	return emailPattern.MatchString(value)
 }

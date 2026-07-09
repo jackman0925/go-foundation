@@ -5,7 +5,7 @@ import (
 	"compress/gzip"
 )
 
-// Gzip compresses data using gzip.
+// Gzip 使用 gzip 压缩数据。
 func Gzip(input []byte) ([]byte, error) {
 	var buffer bytes.Buffer
 	writer := gzip.NewWriter(&buffer)
@@ -19,7 +19,7 @@ func Gzip(input []byte) ([]byte, error) {
 	return buffer.Bytes(), nil
 }
 
-// Gunzip decompresses gzip data.
+// Gunzip 解压 gzip 数据。
 func Gunzip(input []byte) ([]byte, error) {
 	reader, err := gzip.NewReader(bytes.NewReader(input))
 	if err != nil {

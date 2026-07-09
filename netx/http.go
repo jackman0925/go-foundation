@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-// ClientIPFromHTTPRequest returns the host portion of request.RemoteAddr.
+// ClientIPFromHTTPRequest 返回 request.RemoteAddr 中的 host 部分。
 func ClientIPFromHTTPRequest(request *http.Request) string {
 	if request == nil {
 		return ""

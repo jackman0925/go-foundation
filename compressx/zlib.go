@@ -5,7 +5,7 @@ import (
 	"compress/zlib"
 )
 
-// Zlib compresses data using zlib.
+// Zlib 使用 zlib 压缩数据。
 func Zlib(input []byte) ([]byte, error) {
 	var buffer bytes.Buffer
 	writer := zlib.NewWriter(&buffer)
@@ -19,7 +19,7 @@ func Zlib(input []byte) ([]byte, error) {
 	return buffer.Bytes(), nil
 }
 
-// Unzlib decompresses zlib data.
+// Unzlib 解压 zlib 数据。
 func Unzlib(input []byte) ([]byte, error) {
 	reader, err := zlib.NewReader(bytes.NewReader(input))
 	if err != nil {
