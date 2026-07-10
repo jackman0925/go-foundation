@@ -85,9 +85,9 @@ func InterfacesBySubnet(interfaces []NetworkInterface, bindAddr string, showAll 
 	return subnets
 }
 
-// IsVirtualInterfaceName 判断接口名是否包含常见虚拟接口前缀。
+// IsVirtualInterfaceName 判断接口名是否匹配常见虚拟接口命名。
 func IsVirtualInterfaceName(name string) bool {
-	name = strings.ToLower(name)
+	name = strings.ToLower(strings.TrimSpace(name))
 	virtualPrefixes := []string{
 		"utun",
 		"docker",
@@ -106,6 +106,19 @@ func IsVirtualInterfaceName(name string) bool {
 	}
 	for _, prefix := range virtualPrefixes {
 		if strings.HasPrefix(name, prefix) {
+			return true
+		}
+	}
+
+	virtualKeywords := []string{
+		"vmware",
+		"virtualbox",
+		"hyper-v",
+		"vethernet",
+		"loopback",
+	}
+	for _, keyword := range virtualKeywords {
+		if strings.Contains(name, keyword) {
 			return true
 		}
 	}

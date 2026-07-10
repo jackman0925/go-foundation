@@ -7,7 +7,27 @@ import (
 )
 
 func TestIsVirtualInterfaceName(t *testing.T) {
-	virtualNames := []string{"utun0", "docker0", "veth123", "br-abc", "vmnet8", "vboxnet0", "tun0", "tap0", "tailscale0", "wg0", "zt0", "meta0", "clash0", "anyconnect0"}
+	virtualNames := []string{
+		"utun0",
+		"docker0",
+		"veth123",
+		"br-abc",
+		"vmnet8",
+		"vboxnet0",
+		"tun0",
+		"tap0",
+		"tailscale0",
+		"wg0",
+		"zt0",
+		"meta0",
+		"clash0",
+		"anyconnect0",
+		"VMware Network Adapter VMnet1",
+		"VMware Network Adapter VMnet8",
+		"VirtualBox Host-Only Ethernet Adapter",
+		"vEthernet (Default Switch)",
+		"Hyper-V Virtual Ethernet Adapter",
+	}
 	for _, name := range virtualNames {
 		if !IsVirtualInterfaceName(name) {
 			t.Fatalf("expected %s to be virtual", name)
