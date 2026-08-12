@@ -7,6 +7,14 @@
 
 ---
 
+## [0.1.2] - 2026-08-12
+
+- 新增 `idgen.SafeNumberID`，提供前端 JS 安全的本地数字 ID 生成器。
+- 支持 `SafeNumberID.Next()` 返回 `int64`，以及 `SafeNumberID.NextString()` 返回数字字符串。
+- `SafeNumberID` 支持可配置同秒序列位数，默认 3 位，最大 4 位，保持在 JavaScript 安全整数范围内。
+- 补充 `SafeNumberID` 单元测试，覆盖格式、并发唯一性、序列溢出和 JS 安全整数边界。
+- 更新 `idgen` 文档，明确 `SafeNumberID` 只保证同一生成器实例内不重复，不替代跨机器全局唯一 ID。
+
 ## [0.1.1] - 2026-07-10
 
 - 新增 `filex`，提供文件存在性、文本读写、文件复制、大小和路径信息工具。
