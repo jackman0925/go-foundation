@@ -7,6 +7,18 @@
 
 ---
 
+## [0.1.3] - 2026-08-15
+
+- 新增 `mailx` 包，提供基础 SMTP 邮件发送能力。
+- 支持 `To`、`Cc`、`Bcc` 多收件人场景，`Bcc` 只参与 SMTP 投递，不写入 MIME 邮件头。
+- 支持纯文本、HTML、文本加 HTML 混合正文和附件发送。
+- 新增 `mailx.Sender` 接口，便于业务项目替换实现或单元测试 mock。
+- 新增 `mailx.LimitedSender`，支持对邮件发送进行实例级并发限制和等待队列限制。
+- 新增 `mailx.ErrMailBusy`，当并发和等待队列都满时明确返回错误，邮件不会静默丢弃。
+- 新增 `mailx.NewSMTPClient`，提供默认带限流保护的 SMTP 推荐入口。
+- SMTP 发送支持超时、最大邮件大小限制、明文、STARTTLS 和隐式 TLS 连接方式。
+- 补充 `mailx` 单元测试和本地假 SMTP 服务测试，覆盖 MIME 构建、收件人去重、密送保护、并发限制、等待队列满和 SMTP 投递流程。
+
 ## [0.1.2] - 2026-08-12
 
 - 新增 `idgen.SafeNumberID`，提供前端 JS 安全的本地数字 ID 生成器。
