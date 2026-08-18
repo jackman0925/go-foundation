@@ -16,7 +16,7 @@ go get github.com/jackman0925/go-foundation@v0.1.0
 | `errors` | 统一错误码、错误消息、错误包装 |
 | `response` | 标准 API 响应结构和分页响应结构 |
 | `pagination` | 分页参数解析、limit/offset 计算、总页数计算 |
-| `timex` | 日期时间格式化、解析、日/月边界 |
+| `timex` | 日期时间格式化、解析、日/周/月边界、时间戳和星期工具 |
 | `stringx` | 字符串判空、截断、脱敏、随机字符串、命名转换、校验和版本比较 |
 | `jsonx` | JSON 字符串编解码、Pretty JSON |
 | `crypto` | MD5、SHA256、HMAC-SHA256、随机数字、密码哈希、map checksum |
