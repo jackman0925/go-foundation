@@ -28,6 +28,7 @@ go get github.com/jackman0925/go-foundation@v0.1.0
 | `geox` | 经纬度距离计算 |
 | `filex` | 文件存在性、读写文本、复制文件、路径信息 |
 | `mailx` | SMTP 邮件发送、附件、并发限制和等待队列保护 |
+| `lockx` | 进程内按键互斥锁，支持取消等待和自动清理 |
 
 ## 快速开始
 
