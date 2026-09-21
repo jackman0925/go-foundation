@@ -17,8 +17,9 @@ type NetworkInterface struct {
 type LocalInterfaceOptions struct {
 	IncludeLoopback bool
 	IncludeInactive bool
-	IncludeVirtual  bool
-	IncludeRFC2544  bool
+	// IncludeVirtual 保留名称匹配虚拟或隧道接口的候选；不表示这些地址一定可达。
+	IncludeVirtual bool
+	IncludeRFC2544 bool
 }
 
 type localInterfaceCandidate struct {
@@ -29,6 +30,7 @@ type localInterfaceCandidate struct {
 }
 
 // LocalIPv4Interfaces 返回过滤后的本机 IPv4 网络接口。
+// 返回值只是本机地址候选，不保证远端可访问；需要完整候选时设置 IncludeVirtual。
 func LocalIPv4Interfaces(options LocalInterfaceOptions) ([]NetworkInterface, error) {
 	ifaces, err := net.Interfaces()
 	if err != nil {
@@ -86,6 +88,8 @@ func InterfacesBySubnet(interfaces []NetworkInterface, bindAddr string, showAll 
 }
 
 // IsVirtualInterfaceName 判断接口名是否匹配常见虚拟接口命名。
+// 这是名称启发式判断：true 不表示地址不可达，false 也不能证明接口为物理网卡。
+// 例如承载外部网络的 Hyper-V vEthernet 仍会匹配；不应据此直接判断 LAN 可用性。
 func IsVirtualInterfaceName(name string) bool {
 	name = strings.ToLower(strings.TrimSpace(name))
 	virtualPrefixes := []string{

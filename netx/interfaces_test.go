@@ -39,6 +39,46 @@ func TestIsVirtualInterfaceName(t *testing.T) {
 	}
 }
 
+func TestVirtualCandidatesKeepIndependentFilters(t *testing.T) {
+	tests := []struct {
+		name     string
+		ip       string
+		flags    net.Flags
+		ordinary bool
+		included bool
+	}{
+		{"Wi-Fi", "192.168.1.20", net.FlagUp, true, true},
+		{"vEthernet（无线虚拟交换机）", "192.168.43.117", net.FlagUp, false, true},
+		{"vEthernet (Default Switch)", "172.20.0.1", net.FlagUp, false, true},
+		{"  VETHERNET (External)  ", "192.168.1.21", net.FlagUp, false, true},
+		{"Tailscale", "100.64.0.1", net.FlagUp, false, true},
+		{"docker0", "172.17.0.1", net.FlagUp, false, true},
+		{"lo", "127.0.0.1", net.FlagUp | net.FlagLoopback, false, false},
+		{"vEthernet (Inactive)", "192.168.1.22", 0, false, false},
+		{"vEthernet (Fake IP)", "198.18.0.1", net.FlagUp, false, false},
+		{"Wi-Fi", "198.19.255.254", net.FlagUp, false, false},
+		{"vEthernet (IPv6)", "2001:db8::1", net.FlagUp, false, false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name+tt.ip, func(t *testing.T) {
+			candidate := localInterfaceCandidate{name: tt.name, ip: net.ParseIP(tt.ip), flags: tt.flags, mask: net.CIDRMask(24, 32)}
+			for _, include := range []bool{false, true} {
+				want := tt.ordinary
+				if include {
+					want = tt.included
+				}
+				got := filterLocalInterfaceCandidates([]localInterfaceCandidate{candidate}, LocalInterfaceOptions{IncludeVirtual: include})
+				if (len(got) == 1) != want {
+					t.Fatalf("includeVirtual=%v: got %+v, want retained=%v", include, got, want)
+				}
+				if want && (got[0].Name != tt.name || got[0].IP != tt.ip) {
+					t.Fatalf("candidate changed: %+v", got[0])
+				}
+			}
+		})
+	}
+}
+
 func TestFilterLocalInterfaceCandidates(t *testing.T) {
 	candidates := []localInterfaceCandidate{
 		{
