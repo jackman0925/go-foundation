@@ -9,6 +9,8 @@
 
 ## [Unreleased]
 
+## [0.1.8] - 2026-11-11
+
 - 新增 `filex.FormatDecimalSize` 与 `FormatBinarySize`，统一文件大小展示，支持完整 int64 范围并提供跨语言测试样例。
 
 ## [0.1.7] - 2026-11-04
