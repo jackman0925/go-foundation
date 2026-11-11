@@ -9,6 +9,8 @@
 
 ## [Unreleased]
 
+- 新增 `filex.FormatDecimalSize` 与 `FormatBinarySize`，统一文件大小展示，支持完整 int64 范围并提供跨语言测试样例。
+
 ## [0.1.7] - 2026-11-04
 
 - 新增 `xmlx`，支持结构体与 XML 字符串互转及缩进输出，补充属性、嵌套列表、命名空间和错误边界测试。
