@@ -1,4 +1,4 @@
-// Package pathx 提供跨平台词法路径校验，不防御符号链接逃逸。
+// Package pathx 提供词法路径校验和已存在目标的真实路径检查，不保证并发文件访问隔离。
 package pathx
 
 import (
@@ -10,7 +10,7 @@ import (
 	"unicode/utf8"
 )
 
-// ErrPathEscape 表示路径包含目录穿越尝试。
+// ErrPathEscape 表示路径包含目录穿越尝试或解析后的真实路径位于根目录外。
 var ErrPathEscape = errors.New("path escapes root")
 
 // ErrInvalidPath 表示路径格式无效或包含跨平台危险名称。

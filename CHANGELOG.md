@@ -9,6 +9,8 @@
 
 ## [Unreleased]
 
+- 新增 `pathx.ResolveRealUnderRoot`，解析已存在目标的符号链接并拒绝最终真实路径越界；明确不提供并发文件访问隔离。
+
 ## [0.1.9] - 2026-11-12
 
 - 新增 `filex.WriteAtomic/CopyAtomic`，提供同目录临时文件写入与重命名提交，明确非 Unix 平台与持久性限制。
