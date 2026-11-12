@@ -9,6 +9,9 @@
 
 ## [Unreleased]
 
+- 新增 `filex.WriteAtomic/CopyAtomic`，提供同目录临时文件写入与重命名提交，明确非 Unix 平台与持久性限制。
+- 新增 `pathx` 路径原语，严格一次 URL 解码、跨平台危险路径校验及根目录词法解析；不提供符号链接隔离。
+
 ## [0.1.8] - 2026-11-11
 
 - 新增 `filex.FormatDecimalSize` 与 `FormatBinarySize`，统一文件大小展示，支持完整 int64 范围并提供跨语言测试样例。

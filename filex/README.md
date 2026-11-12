@@ -27,6 +27,24 @@ ext := filex.Ext("archive.tar.gz")
 name := filex.BaseName("/tmp/archive.tar.gz")
 ```
 
+## 同目录提交写入
+
+```go
+err := filex.WriteAtomic("config.json", data, filex.AtomicWriteOptions{
+	Mode: 0o600,
+})
+written, err := filex.CopyAtomic("uploads/file.bin", reader, filex.AtomicWriteOptions{
+	CreateDir: true,
+})
+```
+
+默认 Mode 为 0644，执行文件 Sync，不自动创建父目录。CopyAtomic 不关闭 reader；
+错误时 written 只表示复制到临时文件的字节数，不代表提交成功。不会先删除旧目标。
+非 Unix 平台不保证原子重命名，也不承诺断电持久性或防御符号链接竞态。
+Mode 仅接受普通权限位；CreateDir 使用 0755 创建父目录（受 umask 影响）。
+提交前失败会尽力清理临时文件，清理错误不会覆盖原始错误；并发写入以最后成功提交者为准。
+调用方必须信任目标父目录，本接口不负责授权、版本保留或冲突检测。
+
 ## 注意事项
 
 大小展示的单位、舍入及跨语言样例见 [文件大小展示规范](FILE_SIZE_DISPLAY.md)。展示文本不用于上传限制和配额计算。
