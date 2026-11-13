@@ -9,6 +9,8 @@ import (
 	"runtime"
 	"strings"
 	"testing"
+
+	"github.com/jackman0925/go-foundation/pathx"
 )
 
 func TestAtomicWrite(t *testing.T) {
@@ -206,5 +208,44 @@ func TestAtomicSyncPolicy(t *testing.T) {
 		if temp.synced == noSync {
 			t.Fatalf("NoSync=%v, synced=%v", noSync, temp.synced)
 		}
+	}
+}
+
+func TestCopyAtomicAt(t *testing.T) {
+	rootDir := t.TempDir()
+	root, err := pathx.OpenRoot(rootDir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer root.Close()
+	if _, err := CopyAtomicAt(root, "nested/report.txt", strings.NewReader("inside"), AtomicWriteOptions{CreateDir: true}); err != nil {
+		t.Fatal(err)
+	}
+	content, err := os.ReadFile(filepath.Join(rootDir, "nested", "report.txt"))
+	if err != nil || string(content) != "inside" {
+		t.Fatalf("content=%q err=%v", content, err)
+	}
+}
+
+func TestCopyAtomicAtRejectsSymlinkEscape(t *testing.T) {
+	rootDir := t.TempDir()
+	outside := filepath.Join(t.TempDir(), "outside.txt")
+	if err := os.WriteFile(outside, []byte("outside"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Symlink(filepath.Dir(outside), filepath.Join(rootDir, "escape")); err != nil {
+		t.Skipf("symlinks unavailable: %v", err)
+	}
+	root, err := pathx.OpenRoot(rootDir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer root.Close()
+	if _, err := CopyAtomicAt(root, "escape/target.txt", strings.NewReader("blocked"), AtomicWriteOptions{CreateDir: true}); err == nil {
+		t.Fatal("expected symlink escape error")
+	}
+	content, err := os.ReadFile(outside)
+	if err != nil || string(content) != "outside" {
+		t.Fatalf("outside content=%q err=%v", content, err)
 	}
 }

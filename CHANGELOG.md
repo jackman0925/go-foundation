@@ -10,6 +10,8 @@
 ## [Unreleased]
 
 - `pathx.Root` 新增 `OpenDir`，支持在受限目录句柄下安全枚举根目录或内部目录，避免文件列表回退到不安全的字符串路径访问。
+- `filex` 新增 `WriteAtomicAt` 与 `CopyAtomicAt`，在 `pathx.Root` 约束的相对路径内完成临时文件写入、同步与原子替换。
+- `CopyAtomicAt` 可按选项创建父目录，并拒绝符号链接或 Windows reparse point 导致的根目录逃逸；补充正常写入与逃逸拒绝测试。
 
 ## [0.2.1] - 2026-11-13
 
