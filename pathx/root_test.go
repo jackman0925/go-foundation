@@ -68,6 +68,31 @@ func TestRootFileLifecycle(t *testing.T) {
 	}
 }
 
+func TestRootOpenDirReadsEntries(t *testing.T) {
+	rootDir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(rootDir, "report.txt"), []byte("report"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	root, err := OpenRoot(rootDir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer root.Close()
+
+	dir, err := root.OpenDir("")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer dir.Close()
+	entries, err := dir.ReadDir(-1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(entries) != 1 || entries[0].Name() != "report.txt" {
+		t.Fatalf("unexpected directory entries: %#v", entries)
+	}
+}
+
 func TestRootRejectsSymbolicLinkEscape(t *testing.T) {
 	rootDir, outsideDir := t.TempDir(), t.TempDir()
 	if err := os.WriteFile(filepath.Join(outsideDir, "secret.txt"), []byte("secret"), 0o600); err != nil {

@@ -33,12 +33,18 @@ func openRoot(path string) (rootHandle, error) {
 func (r *unixRoot) close() error { return unix.Close(r.fd) }
 
 func (r *unixRoot) openDir(name string) (*os.File, error) {
+	if name == "" || name == "." {
+		// 使用 openat 创建独立的目录打开描述，不能复制根目录描述符；
+		// dup 会共享目录读取偏移，后续 ReadDir 可能读到空结果。
+		fd, err := openDirectoryAt(r.fd, ".")
+		if err != nil {
+			return nil, secureDirectoryError(err)
+		}
+		return os.NewFile(uintptr(fd), "."), nil
+	}
 	fd, err := unix.Dup(r.fd)
 	if err != nil {
 		return nil, err
-	}
-	if name == "" || name == "." {
-		return os.NewFile(uintptr(fd), "."), nil
 	}
 	parts, err := rootParts(name)
 	if err != nil {

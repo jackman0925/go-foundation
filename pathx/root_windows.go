@@ -36,12 +36,17 @@ func openRoot(path string) (rootHandle, error) {
 func (r *windowsRoot) close() error { return windows.CloseHandle(r.handle) }
 
 func (r *windowsRoot) openDir(name string) (*os.File, error) {
+	if name == "" || name == "." {
+		// 单独打开根目录，避免 DuplicateHandle 共享目录枚举状态。
+		handle, err := ntOpen(r.handle, ".", windows.FILE_GENERIC_READ|windows.FILE_TRAVERSE, windows.FILE_OPEN, windows.FILE_DIRECTORY_FILE)
+		if err != nil {
+			return nil, secureWindowsError(err)
+		}
+		return os.NewFile(uintptr(handle), "."), nil
+	}
 	current, err := r.duplicate()
 	if err != nil {
 		return nil, err
-	}
-	if name == "" || name == "." {
-		return os.NewFile(uintptr(current), "."), nil
 	}
 	parts, err := rootParts(name)
 	if err != nil {
