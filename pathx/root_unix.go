@@ -32,6 +32,34 @@ func openRoot(path string) (rootHandle, error) {
 
 func (r *unixRoot) close() error { return unix.Close(r.fd) }
 
+func (r *unixRoot) openDir(name string) (*os.File, error) {
+	fd, err := unix.Dup(r.fd)
+	if err != nil {
+		return nil, err
+	}
+	if name == "" || name == "." {
+		return os.NewFile(uintptr(fd), "."), nil
+	}
+	parts, err := rootParts(name)
+	if err != nil {
+		unix.Close(fd)
+		return nil, err
+	}
+	for _, part := range parts {
+		next, err := openDirectoryAt(fd, part)
+		if err != nil {
+			unix.Close(fd)
+			return nil, secureDirectoryError(err)
+		}
+		if err := unix.Close(fd); err != nil {
+			unix.Close(next)
+			return nil, err
+		}
+		fd = next
+	}
+	return os.NewFile(uintptr(fd), parts[len(parts)-1]), nil
+}
+
 func (r *unixRoot) openFile(name string, flag int, perm fs.FileMode) (*os.File, error) {
 	parent, base, err := r.parent(name)
 	if err != nil {

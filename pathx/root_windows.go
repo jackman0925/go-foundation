@@ -35,6 +35,34 @@ func openRoot(path string) (rootHandle, error) {
 
 func (r *windowsRoot) close() error { return windows.CloseHandle(r.handle) }
 
+func (r *windowsRoot) openDir(name string) (*os.File, error) {
+	current, err := r.duplicate()
+	if err != nil {
+		return nil, err
+	}
+	if name == "" || name == "." {
+		return os.NewFile(uintptr(current), "."), nil
+	}
+	parts, err := rootParts(name)
+	if err != nil {
+		windows.CloseHandle(current)
+		return nil, err
+	}
+	for _, part := range parts {
+		next, err := ntOpen(current, part, windows.FILE_GENERIC_READ|windows.FILE_TRAVERSE, windows.FILE_OPEN, windows.FILE_DIRECTORY_FILE)
+		if err != nil {
+			windows.CloseHandle(current)
+			return nil, secureWindowsError(err)
+		}
+		if err := windows.CloseHandle(current); err != nil {
+			windows.CloseHandle(next)
+			return nil, err
+		}
+		current = next
+	}
+	return os.NewFile(uintptr(current), parts[len(parts)-1]), nil
+}
+
 func (r *windowsRoot) openFile(name string, flag int, perm fs.FileMode) (*os.File, error) {
 	parent, base, err := r.parent(name)
 	if err != nil {

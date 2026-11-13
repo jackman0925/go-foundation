@@ -23,6 +23,7 @@ type Root struct {
 
 type rootHandle interface {
 	close() error
+	openDir(name string) (*os.File, error)
 	openFile(name string, flag int, perm fs.FileMode) (*os.File, error)
 	mkdirAll(name string, perm fs.FileMode) error
 	remove(name string) error
@@ -51,6 +52,14 @@ func (r *Root) Close() error {
 	err := r.impl.close()
 	r.impl = nil
 	return err
+}
+
+// OpenDir 安全打开根目录或其内部目录，用于读取目录项。
+// name 为空或为 . 时表示受限根目录本身。
+func (r *Root) OpenDir(name string) (*os.File, error) {
+	return r.withHandleFile(func(impl rootHandle) (*os.File, error) {
+		return impl.openDir(name)
+	})
 }
 
 // Open 以只读方式安全打开根目录内的现有文件或目录。

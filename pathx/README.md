@@ -67,7 +67,7 @@ if err != nil {
 defer file.Close()
 ```
 
-- `Root` 在打开时持有根目录句柄；后续 `Open`、`OpenFile`、`MkdirAll`、`Remove`、`Rename` 都相对此句柄执行，不接受绝对路径或 `..`。
+- `Root` 在打开时持有根目录句柄；后续 `OpenDir`、`Open`、`OpenFile`、`MkdirAll`、`Remove`、`Rename` 都相对此句柄执行，不接受绝对路径或 `..`。`OpenDir("")` 可安全枚举受限根目录本身。
 - macOS/Linux 使用 `openat` 逐段打开目录并加 `O_NOFOLLOW`；Windows 使用 `NtCreateFile` 的 `RootDirectory` 与 `OBJ_DONT_REPARSE`，拒绝符号链接、junction 和其他 reparse point。
 - 根目录本身也不得为链接或 reparse point。根路径在对象创建后被替换时，已打开的根句柄仍指向原目录。
 - `Remove` 不递归删除；`Rename` 仅允许同一个 `Root` 内移动，平台会替换同名目标。

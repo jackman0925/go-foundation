@@ -19,6 +19,20 @@ func TestRootFileLifecycle(t *testing.T) {
 	if err := root.MkdirAll("documents/2026", 0o750); err != nil {
 		t.Fatal(err)
 	}
+	rootDirFile, err := root.OpenDir("")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := rootDirFile.Close(); err != nil {
+		t.Fatal(err)
+	}
+	nestedDir, err := root.OpenDir("documents")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := nestedDir.Close(); err != nil {
+		t.Fatal(err)
+	}
 	file, err := root.OpenFile("documents/2026/report.txt", os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0o640)
 	if err != nil {
 		t.Fatal(err)
