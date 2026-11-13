@@ -9,6 +9,8 @@
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-11-13
+
 - 新增 `pathx.ResolveRealUnderRoot`，解析已存在目标的符号链接并拒绝最终真实路径越界；明确不提供并发文件访问隔离。
 - 新增 `pathx.Root` 受限根目录文件操作：通过目录句柄执行打开、创建、建目录、删除和重命名，防御符号链接、Windows reparse point 及目录替换带来的路径逃逸。
 - `pathx.Root` 在 macOS/Linux 使用 `openat` 与 `O_NOFOLLOW`，Windows 使用 `NtCreateFile` 的 `RootDirectory` 与 `OBJ_DONT_REPARSE`；补充文件生命周期、链接逃逸、根路径替换和并发安全测试。
