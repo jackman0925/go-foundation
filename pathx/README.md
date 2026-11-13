@@ -45,3 +45,33 @@ _ = realPath
   此接口只检查当时解析得到的位置，不保证后续 Open、Write 或 Remove 仍受根目录约束。
   对可被攻击者并发修改的目录，需要基于受限目录句柄的文件操作能力，不能仅靠返回路径字符串实现隔离。
 - Windows 符号链接测试可能因权限不足跳过；交叉编译不代表已验证 junction 或其他 reparse point 的运行行为。
+
+## 受限根目录操作
+
+`ResolveUnderRoot` 和 `ResolveRealUnderRoot` 都返回路径字符串，不能消除检查与使用之间的竞态。需要把文件访问本身限制在工作目录内时，使用 `Root`：
+
+```go
+root, err := pathx.OpenRoot(workDir)
+if err != nil {
+	return err
+}
+defer root.Close()
+
+if err := root.MkdirAll("incoming/2026", 0o750); err != nil {
+	return err
+}
+file, err := root.OpenFile("incoming/2026/report.txt", os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0o640)
+if err != nil {
+	return err
+}
+defer file.Close()
+```
+
+- `Root` 在打开时持有根目录句柄；后续 `Open`、`OpenFile`、`MkdirAll`、`Remove`、`Rename` 都相对此句柄执行，不接受绝对路径或 `..`。
+- macOS/Linux 使用 `openat` 逐段打开目录并加 `O_NOFOLLOW`；Windows 使用 `NtCreateFile` 的 `RootDirectory` 与 `OBJ_DONT_REPARSE`，拒绝符号链接、junction 和其他 reparse point。
+- 根目录本身也不得为链接或 reparse point。根路径在对象创建后被替换时，已打开的根句柄仍指向原目录。
+- `Remove` 不递归删除；`Rename` 仅允许同一个 `Root` 内移动，平台会替换同名目标。
+- `OpenFile` 仅支持 `O_WRONLY`、`O_RDWR`、`O_CREATE`、`O_EXCL`、`O_TRUNC`；父目录必须先由 `MkdirAll` 创建。
+- 目录句柄能力不处理业务 ACL、租户隔离、审计、文件冲突策略或递归删除。
+
+Windows 的 reparse-point 运行测试需要在 Windows CI 执行；本机交叉编译只验证接口和构建，不替代真实系统测试。
